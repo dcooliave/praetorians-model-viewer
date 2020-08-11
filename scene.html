@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <title>Praetorians Model Viewer</title>
+
+  <link rel="stylesheet" href="src/tachyons.css">
+
+  <script type="module" src="scene.js"></script>
+
+  <style media="screen">
+    #models:empty:before {
+      content: 'drop files here';
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+  </style>
+
+</head>
+
+<body class="absolute absolute--fill overflow-hidden flex f6">
+
+  <div id="side-bar" class="flex-none flex flex-column w-30 w-third-l mw6 pa2">
+
+    <h1 class="f6 fw6">Models</h1>
+
+    <select id="models" class="h-25 flex-auto mv1" size="2"></select>
+
+    <h1 class="f6 fw6">Geometries</h1>
+
+    <select id="meshes" class="h-25 flex-auto mv1" size="2"></select>
+
+    <div class="flex items-center mv1">
+
+      <input type="checkbox" id="grid" value="showGrid">
+      <label for="grid" class="ml1">Grid</label>
+
+    </div>
+
+    <div class="flex items-center mv1">
+
+      <input type="checkbox" id="aabb" value="showBbox">
+      <label for="aabb" class="ml1">Bounding box</label>
+
+    </div>
+
+    <h1 class="f6 fw6">Animation</h1>
+
+    <select id="animations" class="h-25 flex-auto mv1" size="2"></select>
+
+    <div class="mv1">
+
+      <button id="play" class="ph3 pv1 dib bg-light-gray ba b--gray br1 dim">Play</button>
+      <button id="pause" class="ph3 pv1 dib bg-light-gray ba b--gray br1 dim">Pause</button>
+
+    </div>
+
+    <input id="timeline" class="pv2" type="range" value="0" step="any">
+
+  </div>
+
+  <div id="scene" class="flex-auto">
+
+    <canvas class="w-100 h-100 outline-0"></canvas>
+
+  </div>
+
+</body>
+
+</html>
