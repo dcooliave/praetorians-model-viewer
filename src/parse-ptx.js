@@ -11,7 +11,7 @@ export default function(buffer) {
   const bitsPerPixel = cursor.readUint()
   const numComponents = bitsPerPixel / 8
   const numBytes = width * height * numComponents
-  const colors = cursor.iterator(generateColor, numBytes, numComponents)
+  const colors = cursor.iterator(generateColor, numBytes)
 
   cursor.skip()
 
