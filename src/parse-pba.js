@@ -49,6 +49,7 @@ export default function(buffer) {
       geometry: null,
       materials: [],
       animations: [],
+      resources: new Set(),
       mixer: null,
       actions: [],
       clips: [],

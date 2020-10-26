@@ -128,6 +128,8 @@ async function init(config) {
 
   pbaMap = new Map()
   ptxMap = new Map()
+
+  window.renderer = renderer
 }
 
 function listFiles(event) {
@@ -220,9 +222,13 @@ async function selectModel() {
 function selectGeometry() {
   action?.stop()
 
+  node.remove(...node.children)
+
+  selectedObject?.resources.forEach(obj => obj.dispose())
+  selectedObject?.resources.clear()
+
   selectedObject = currentObject[elementGeometries.selectedIndex]
 
-  node.remove(...node.children)
   node.add(selectedObject.transformGroup)
 
   box.update()

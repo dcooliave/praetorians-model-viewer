@@ -18,7 +18,8 @@ export default function(pba, ptx) {
     models.push({
       transformGroup: mesh.model.node,
       actions: mesh.model.actions,
-      mixer: mesh.model.mixer
+      mixer: mesh.model.mixer,
+      resources: mesh.model.resources
     })
   }
 

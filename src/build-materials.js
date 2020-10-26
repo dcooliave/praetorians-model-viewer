@@ -11,7 +11,9 @@ export default function(mesh, textures) {
     const material = new MeshStandardMaterial()
 
     if (surface.textureID != -1) {
-      material.map = textures[surface.textureID]
+      const texture = textures[surface.textureID]
+      material.map = texture
+      mesh.model.resources.add(texture)
     }
 
     switch (surface.material) {
@@ -30,6 +32,7 @@ export default function(mesh, textures) {
     }
 
     mesh.model.materials.push(material)
+    mesh.model.resources.add(material)
   }
 
   if (mesh.type == Types.GEOMETRY_ANIMATED) {

@@ -9,6 +9,7 @@ function buildRigidGeometry(mesh) {
   }
 
   mesh.model.geometry = geometries
+  geometries.forEach(geometry => mesh.model.resources.add(geometry))
 }
 
 function buildAnimatedGeometry(mesh) {
@@ -28,7 +29,9 @@ function buildAnimatedGeometry(mesh) {
     offset += surface.numVertices
   }
 
-  mesh.model.geometry = loadGeometry(mesh.geometry.vertices, indices, groups)
+  const geometry = loadGeometry(mesh.geometry.vertices, indices, groups)
+  mesh.model.geometry = geometry
+  mesh.model.resources.add(geometry)
 }
 
 export default function(mesh) {
