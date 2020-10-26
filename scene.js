@@ -97,6 +97,7 @@ async function init(config) {
     config.gridHelperLineColor
   )
   grid.visible = config.showGridHelper
+  grid.material.depthWrite = false
 
   box = new BoxHelper(node, config.boxHelperColor)
   box.visible = config.showBoxHelper
