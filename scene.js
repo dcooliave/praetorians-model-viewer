@@ -103,8 +103,8 @@ async function init(config) {
   box.visible = config.showBoxHelper
 
   scene.add(light)
-  scene.add(node)
   scene.add(grid)
+  scene.add(node)
   scene.add(box)
 
   renderer = new WebGLRenderer({ canvas, antialias: true })
