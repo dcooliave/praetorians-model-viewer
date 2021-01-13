@@ -1,3 +1,5 @@
+# Praetorians Model Viewer
+
 A browser based 3D model viewer for the PC game [Praetorians](https://en.wikipedia.org/wiki/Praetorians_(video_game)). Built with
 [three.js](https://threejs.org/).
 
