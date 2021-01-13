@@ -11,18 +11,18 @@ import {
   PerspectiveCamera,
   Scene,
   WebGLRenderer
-} from './src/three.module.js'
+} from './three.module.js'
 
-import { MapControls } from './src/OrbitControls.js'
+import { MapControls } from './OrbitControls.js'
 
-import generateFile from './src/generate-file.js'
-import readEntry from './src/read-entry.js'
+import generateFile from './generate-file.js'
+import readEntry from './read-entry.js'
 
-import loadModel from './src/load-model.js'
-import loadTexture from './src/load-texture.js'
+import loadModel from './load-model.js'
+import loadTexture from './load-texture.js'
 
-import parsePBA from './src/parse-pba.js'
-import parsePTX from './src/parse-ptx.js'
+import parsePBA from './parse-pba.js'
+import parsePTX from './parse-ptx.js'
 
 let renderer, scene, camera, light, controls, grid, resizer, clock, node, box
 let elementModels, elementGeometries, elementAnimations
