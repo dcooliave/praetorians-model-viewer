@@ -15,8 +15,7 @@ import {
 
 import { MapControls } from './OrbitControls.js'
 
-import generateFile from './generate-file.js'
-import readEntry from './read-entry.js'
+import Registry from './registry.js'
 
 import loadModel from './load-model.js'
 import loadTexture from './load-texture.js'
@@ -28,7 +27,7 @@ let renderer, scene, camera, light, controls, grid, resizer, clock, node, box
 let elementModels, elementGeometries, elementAnimations
 let elementBox, elementGrid, elementPlay, elementPause, elementTimeline
 let action, currentObject, selectedObject
-let pbaMap, ptxMap, timeout
+let timeout
 
 init({
   clearColor: '#1565c0',
@@ -126,71 +125,41 @@ async function init(config) {
   resizer.observe(container)
 
   renderer.setAnimationLoop(animate)
-
-  pbaMap = new Map()
-  ptxMap = new Map()
-
-  window.renderer = renderer
 }
 
 function listFiles(event) {
   event.preventDefault()
 
   if (event.type == 'drop') {
-    addFiles(event.dataTransfer.items)
+    Registry.load(event.dataTransfer.items).then(addFiles)
   }
 }
 
-async function addFiles(items) {
+function addFiles(items) {
   const fragment = new DocumentFragment()
 
-  for await (const file of generateFile(items)) {
-    const name = file.name.slice(0, -4)
-    const ext = file.name.slice(-4).toLowerCase()
+  const type = /\.pba$/i
+  const files = items.filter(f => type.test(f.fullPath))
 
-    if (ext == '.pba') {
-      if (!pbaMap.has(name)) {
-        fragment.appendChild(
-          Object.assign(document.createElement('option'), {
-            innerText: file.fullPath,
-            value: name
-          })
-        )
-      }
-
-      pbaMap.set(name, file)
-    } else if (ext == '.ptx') {
-      ptxMap.set(name, file)
-    }
+  for (const file of files) {
+    const option = fragment.appendChild(document.createElement('option'))
+    option.title = option.text = file.fullPath
   }
 
   elementModels.appendChild(fragment)
 }
 
-async function getModel(name) {
-  const pbaFile = pbaMap.get(name)
+async function getModel(path) {
+  console.log("Loading", path)
 
-  console.log("Loading", pbaFile.fullPath)
+  const slash = path.lastIndexOf('/')
+  const name = slash != -1 ? path.slice(slash + 1, -4) : path.slice(-4)
 
-  const pba = parsePBA(await readEntry(pbaFile))
+  const pba = parsePBA(await Registry.read(path))
 
-  const textures = await Promise.allSettled(
-    pba.textures.map(async (name) => {
-      const ptxFile = ptxMap.get(name)
-
-      console.log("Loading", ptxFile.fullPath)
-
-      return parsePTX(await readEntry(ptxFile))
-    })
-  )
-
-  const ptx = []
-
-  if (!textures.every(result => result.status == 'fulfilled')) {
-    console.log("Couldn't load textures")
-  } else {
-    ptx.push(...textures.map(result => result.value))
-  }
+  const ptxlist = pba.textures.map(s => s + '.ptx')
+  ptxlist.forEach(s => console.log("Loading", s))
+  const ptx = await Promise.all(ptxlist.map(s => Registry.read(s))).then(a => a.map(parsePTX))
 
   return { pba, ptx }
 }
