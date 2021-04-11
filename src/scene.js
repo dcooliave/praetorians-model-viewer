@@ -152,13 +152,9 @@ function addFiles(items) {
 async function getModel(path) {
   console.log("Loading", path)
 
-  const slash = path.lastIndexOf('/')
-  const name = slash != -1 ? path.slice(slash + 1, -4) : path.slice(-4)
-
   const pba = parsePBA(await Registry.read(path))
 
-  const ptxlist = pba.textures.map(s => s + '.ptx')
-  ptxlist.forEach(s => console.log("Loading", s))
+  const ptxlist = pba.textures.map(s => '/' + s + '.ptx')
   const ptx = await Promise.all(ptxlist.map(s => Registry.read(s))).then(a => a.map(parsePTX))
 
   return { pba, ptx }
