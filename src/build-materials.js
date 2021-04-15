@@ -57,10 +57,9 @@ export default function(mesh, textures) {
     switch (surface.material) {
       case Types.MATERIAL_ALPHA:
       material.transparent = true
-      material.alphaTest = .5
+      material.depthWrite = false
       break
       case Types.MATERIAL_ALPHATEST:
-      material.transparent = true
       material.alphaTest = .5
       break
       case Types.MATERIAL_SHADOW:
