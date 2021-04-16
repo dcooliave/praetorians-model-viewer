@@ -58,6 +58,7 @@ export default function(mesh, textures) {
       case Types.MATERIAL_ALPHA:
       material.transparent = true
       material.depthWrite = false
+      material.depthTest = false
       break
       case Types.MATERIAL_ALPHATEST:
       material.alphaTest = .5
