@@ -23,7 +23,7 @@ import parsePTX from './parse-ptx.js'
 
 let renderer, scene, camera, controls, grid, resizer, clock, node, box
 let elementModels, elementGeometries, elementAnimations
-let elementBox, elementGrid, elementPlay, elementPause, elementTimeline
+let elementBox, elementGrid, elementPlay, elementPause, elementTimeline, elementZoom
 let action, currentObject, selectedObject
 let timeout
 
@@ -37,10 +37,11 @@ init({
   gridHelperCenterColor: '#0d47a1',
   gridHelperLineColor: '#1976d2',
   controlMaxDistace: 500.0,
-  controlMinDistace: 5.0,
-  controlMaxAngle: 1.0471975511965976,
+  controlMinDistace: 2.0,
+  controlMaxAngle: 1.5471975511965976,
   controlMinAngle: 0.5235987755982988,
-  controlKeypanSpeed: 30.0
+  controlKeypanSpeed: 30.0,
+  zoomIntoView: true
 })
 
 async function init(config) {
@@ -64,6 +65,10 @@ async function init(config) {
   elementGrid = document.getElementById('grid')
   elementGrid.onchange = toggleGrid
   elementGrid.checked = config.showGridHelper
+
+  elementZoom = document.getElementById('zoom')
+  elementZoom.onchange = zoomCamera
+  elementZoom.checked = config.zoomIntoView
 
   elementPlay = document.getElementById('play')
   elementPlay.onclick = playAnimation
@@ -194,6 +199,8 @@ function selectGeometry() {
 
   box.update()
 
+  zoomCamera()
+
   const fragment = new DocumentFragment()
 
   selectedObject.actions?.forEach(action => {
@@ -222,6 +229,28 @@ function selectAnimation() {
   elementTimeline.oninput = changeFrame
 
   action.play()
+}
+
+function zoomCamera() {
+  if (!elementZoom.checked) return
+  if (!selectedObject) return
+
+  const fitOffset = 2.
+  const fitHeightDistance = box.geometry.boundingSphere.radius / (2 * Math.atan(Math.PI * camera.fov / 360))
+  const fitWidthDistance = fitHeightDistance / camera.aspect
+
+  const distance = fitOffset * Math.max(fitHeightDistance, fitWidthDistance)
+  const direction = controls.target.clone().sub(camera.position).normalize().multiplyScalar(distance)
+
+  controls.maxDistance = distance * 10
+  controls.target.copy(box.geometry.boundingSphere.center)
+
+  camera.near = distance / 100
+  camera.far = distance * 100
+  camera.updateProjectionMatrix()
+  camera.position.copy(controls.target).sub(direction)
+
+  controls.update()
 }
 
 function toggleBoundingBox() {
