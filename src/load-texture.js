@@ -5,7 +5,7 @@ import {
   RepeatWrapping,
   RGBAFormat,
   RGBFormat
-} from './three.module.js'
+} from './three/build/three.module.js'
 
 export default function(data) {
   const texture = new DataTexture(Uint8Array.from(data.colors), data.width, data.height)

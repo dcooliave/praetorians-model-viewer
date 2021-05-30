@@ -1,10 +1,9 @@
 import {
-  CustomBlending,
   DoubleSide,
   MeshStandardMaterial,
   ShaderMaterial,
   Uniform
-} from './three.module.js'
+} from './three/build/three.module.js'
 
 import * as Types from './types.js'
 

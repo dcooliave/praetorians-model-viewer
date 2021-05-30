@@ -1,4 +1,4 @@
-import { Group, Mesh } from './three.module.js'
+import { Group, Mesh } from './three/build/three.module.js'
 
 import * as Types from './types.js'
 

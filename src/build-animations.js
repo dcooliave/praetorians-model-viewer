@@ -1,4 +1,4 @@
-import { AnimationClip, BufferAttribute, Vector3 } from './three.module.js'
+import { AnimationClip, BufferAttribute, Vector3 } from './three/build/three.module.js'
 import { GEOMETRY_ANIMATED } from './types.js'
 
 function scaleVertices(track) {
