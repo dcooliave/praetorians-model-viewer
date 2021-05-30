@@ -10,7 +10,7 @@ import * as Types from './types.js'
 
 export default function(mesh, textures) {
   for (const surface of mesh.geometry.surfaces) {
-    const texture = textures[surface.textureID] || textures[0]
+    const texture = textures[surface.textureID]
 
     if (texture) mesh.model.resources.add(texture)
 
