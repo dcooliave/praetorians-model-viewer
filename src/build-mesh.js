@@ -9,19 +9,13 @@ export default function(mesh, transforms) {
     for (const [geometryIndex, geometry] of mesh.model.geometry.entries()) {
       const object = new Mesh(geometry, mesh.model.materials[geometryIndex])
 
-      switch (mesh.geometry.surfaces[geometryIndex].material) {
-        case Types.MATERIAL_ALPHA:
-        object.renderOrder = 3
-        break
-        case Types.MATERIAL_ALPHATEST:
+      if (mesh.geometry.surfaces[geometryIndex].material == Types.MATERIAL_ALPHA) {
+        const edgeMaterial = object.material.clone()
+        edgeMaterial.alphaTest = .5
+        edgeMaterial.depthWrite = true
+        transformGroup.add(new Mesh(geometry, edgeMaterial))
+        mesh.model.resources.add(edgeMaterial)
         object.renderOrder = 1
-        break
-        case Types.MATERIAL_SHADOW:
-        object.renderOrder = 2
-        break
-        default:
-        object.renderOrder = 0
-        break
       }
 
       transformGroup.add(object)
