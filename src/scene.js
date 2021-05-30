@@ -1,5 +1,3 @@
-// TODO
-
 import {
   AmbientLight,
   BoxHelper,
@@ -23,7 +21,7 @@ import loadTexture from './load-texture.js'
 import parsePBA from './parse-pba.js'
 import parsePTX from './parse-ptx.js'
 
-let renderer, scene, camera, light, controls, grid, resizer, clock, node, box
+let renderer, scene, camera, controls, grid, resizer, clock, node, box
 let elementModels, elementGeometries, elementAnimations
 let elementBox, elementGrid, elementPlay, elementPause, elementTimeline
 let action, currentObject, selectedObject
@@ -31,7 +29,6 @@ let timeout
 
 init({
   clearColor: '#1565c0',
-  ambientLightColor: '#ffffff',
   showBoxHelper: false,
   boxHelperColor: '#ffff00',
   showGridHelper: true,
@@ -82,7 +79,6 @@ async function init(config) {
   scene = new Scene()
   clock = new Clock()
   node = new Group()
-  light = new AmbientLight(config.ambientLightColor, 1.)
 
   camera = new PerspectiveCamera(45, clientRect.width / clientRect.height, .01, 1000)
   camera.position.x = 6.
@@ -101,7 +97,6 @@ async function init(config) {
   box = new BoxHelper(node, config.boxHelperColor)
   box.visible = config.showBoxHelper
 
-  scene.add(light)
   scene.add(grid)
   scene.add(node)
   scene.add(box)
