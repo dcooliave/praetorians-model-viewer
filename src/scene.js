@@ -202,7 +202,7 @@ function selectMesh() {
 
   const fragment = new DocumentFragment()
 
-  selectedMesh.actions?.forEach(action => {
+  selectedMesh.actions.forEach(action => {
     fragment.appendChild(
       Object.assign(document.createElement('option'), {
         text: action.getClip().name
@@ -219,9 +219,9 @@ function selectMesh() {
 }
 
 function selectAnimation() {
-  selectedMesh?.actions?.forEach(action => action.stop())
+  selectedMesh?.actions.forEach(action => action.stop())
 
-  selectedAnimation = selectedMesh.actions?.[elementAnimations.selectedIndex]
+  selectedAnimation = selectedMesh.actions[elementAnimations.selectedIndex]
 
   elementTimeline.max = selectedAnimation.getClip().duration
   elementTimeline.value = selectedAnimation.time
@@ -261,11 +261,11 @@ function toggleGrid() {
 }
 
 function playAnimation() {
-  selectedMesh?.actions?.forEach(action => action.paused = false)
+  selectedMesh?.actions.forEach(action => action.paused = false)
 }
 
 function pauseAnimation() {
-  selectedMesh?.actions?.forEach(action => action.paused = true)
+  selectedMesh?.actions.forEach(action => action.paused = true)
 }
 
 function debounceCallback(ms, callback) {
