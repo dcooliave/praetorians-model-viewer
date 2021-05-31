@@ -6,7 +6,7 @@ import buildMixer from './build-mixer.js'
 
 export default function(pba, ptx) {
   const transforms = pba.transforms
-  const models = []
+  const meshes = []
 
   for (const mesh of pba.meshes) {
     buildMaterials(mesh, ptx)
@@ -15,7 +15,7 @@ export default function(pba, ptx) {
     buildMesh(mesh, transforms)
     buildMixer(mesh)
 
-    models.push({
+    meshes.push({
       transformGroup: mesh.model.node,
       actions: mesh.model.actions,
       mixer: mesh.model.mixer,
@@ -23,5 +23,5 @@ export default function(pba, ptx) {
     })
   }
 
-  return models
+  return meshes
 }

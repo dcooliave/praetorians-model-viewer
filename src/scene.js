@@ -23,7 +23,7 @@ import parsePTX from './parse-ptx.js'
 let renderer, scene, camera, controls, grid, resizer, clock, node, box
 let elementModels, elementGeometries, elementAnimations
 let elementBox, elementGrid, elementPlay, elementPause, elementTimeline, elementZoom
-let action, currentObject, selectedObject
+let selectedAnimation, selectedModel, selectedMesh
 let timeout
 
 init({
@@ -52,7 +52,7 @@ async function init(config) {
   elementModels.onchange = selectModel
 
   elementGeometries = document.getElementById('meshes')
-  elementGeometries.onchange = selectGeometry
+  elementGeometries.onchange = selectMesh
 
   elementAnimations = document.getElementById('animations')
   elementAnimations.onchange = selectAnimation
@@ -168,14 +168,14 @@ async function selectModel() {
 
   if (elementModels.value != name) return
 
-  currentObject = loadModel(model.pba, model.ptx.map(loadTexture))
+  selectedModel = loadModel(model.pba, model.ptx.map(loadTexture))
 
   const fragment = new DocumentFragment()
 
-  for (const mesh of currentObject) {
+  for (const model of selectedModel) {
     fragment.appendChild(
       Object.assign(document.createElement('option'), {
-        text: mesh.transformGroup.name
+        text: model.transformGroup.name
       })
     )
   }
@@ -184,17 +184,17 @@ async function selectModel() {
   elementGeometries.selectedIndex = -1
 }
 
-function selectGeometry() {
-  action?.stop()
+function selectMesh() {
+  selectedAnimation?.stop()
 
   node.remove(...node.children)
 
-  selectedObject?.resources.forEach(obj => obj.dispose())
-  selectedObject?.resources.clear()
+  selectedMesh?.resources.forEach(obj => obj.dispose())
+  selectedMesh?.resources.clear()
 
-  selectedObject = currentObject[elementGeometries.selectedIndex]
+  selectedMesh = selectedModel[elementGeometries.selectedIndex]
 
-  node.add(selectedObject.transformGroup)
+  node.add(selectedMesh.transformGroup)
 
   box.update()
 
@@ -202,7 +202,7 @@ function selectGeometry() {
 
   const fragment = new DocumentFragment()
 
-  selectedObject.actions?.forEach(action => {
+  selectedMesh.actions?.forEach(action => {
     fragment.appendChild(
       Object.assign(document.createElement('option'), {
         text: action.getClip().name
@@ -219,20 +219,20 @@ function selectGeometry() {
 }
 
 function selectAnimation() {
-  selectedObject?.actions?.forEach(action => action.stop())
+  selectedMesh?.actions?.forEach(action => action.stop())
 
-  action = selectedObject.actions?.[elementAnimations.selectedIndex]
+  selectedAnimation = selectedMesh.actions?.[elementAnimations.selectedIndex]
 
-  elementTimeline.max = action.getClip().duration
-  elementTimeline.value = action.time
+  elementTimeline.max = selectedAnimation.getClip().duration
+  elementTimeline.value = selectedAnimation.time
   elementTimeline.oninput = changeFrame
 
-  action.play()
+  selectedAnimation.play()
 }
 
 function zoomCamera() {
   if (!elementZoom.checked) return
-  if (!selectedObject) return
+  if (!selectedMesh) return
 
   const fitOffset = 2.
   const fitHeightDistance = box.geometry.boundingSphere.radius / (2 * Math.atan(Math.PI * camera.fov / 360))
@@ -261,11 +261,11 @@ function toggleGrid() {
 }
 
 function playAnimation() {
-  selectedObject?.actions?.forEach(action => action.paused = false)
+  selectedMesh?.actions?.forEach(action => action.paused = false)
 }
 
 function pauseAnimation() {
-  selectedObject?.actions?.forEach(action => action.paused = true)
+  selectedMesh?.actions?.forEach(action => action.paused = true)
 }
 
 function debounceCallback(ms, callback) {
@@ -277,7 +277,7 @@ function debounceCallback(ms, callback) {
 }
 
 function changeFrame() {
-  action.time = elementTimeline.valueAsNumber
+  selectedAnimation.time = elementTimeline.valueAsNumber
 }
 
 function resize(entries) {
@@ -290,9 +290,9 @@ function resize(entries) {
 }
 
 function animate(time) {
-  selectedObject?.mixer?.update(clock.getDelta())
+  selectedMesh?.mixer?.update(clock.getDelta())
 
-  elementTimeline.value = action?.time ?? 0
+  elementTimeline.value = selectedAnimation?.time ?? 0
 
   controls.update()
   renderer.render(scene, camera)
