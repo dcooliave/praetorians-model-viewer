@@ -15,6 +15,7 @@ export default function(mesh, transforms) {
         edgeMaterial.depthWrite = true
         transformGroup.add(new Mesh(geometry, edgeMaterial))
         mesh.model.resources.add(edgeMaterial)
+        mesh.model.resources.add(edgeMaterial.uniforms.uTexture.value)
         object.renderOrder = 1
       }
 
