@@ -112,7 +112,7 @@ async function init(config) {
 
   controls = new MapControls(camera, renderer.domElement)
   controls.enableDamping = true
-  controls.dampingFactor = .1
+  controls.dampingFactor = .2
   controls.rotateSpeed = 1.
   controls.keyPanSpeed = config.controlKeypanSpeed
   controls.minDistance = config.controlMinDistace
