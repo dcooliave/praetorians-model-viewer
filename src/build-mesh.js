@@ -12,10 +12,9 @@ export default function(mesh, transforms) {
       if (mesh.geometry.surfaces[geometryIndex].material == Types.MATERIAL_ALPHA) {
         const edgeMaterial = object.material.clone()
         edgeMaterial.alphaTest = .5
-        edgeMaterial.depthWrite = true
+        edgeMaterial.uniforms = object.material.uniforms
         transformGroup.add(new Mesh(geometry, edgeMaterial))
         mesh.model.resources.add(edgeMaterial)
-        mesh.model.resources.add(edgeMaterial.uniforms.uTexture.value)
         object.renderOrder = 1
       }
 
