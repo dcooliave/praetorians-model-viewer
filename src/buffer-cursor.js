@@ -39,6 +39,14 @@ export default class BufferCursor {
     }
   }
 
+  buffer(size) {
+    const offset = this.data.byteOffset + this.position
+    const buffer = this.data.buffer.slice(offset, offset + size)
+    this.position += size
+
+    return buffer
+  }
+
   readUchar() {
     const value = this.data.getUint8(this.position, true)
     this.position += 1
