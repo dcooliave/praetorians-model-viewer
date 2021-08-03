@@ -19,13 +19,15 @@ function buildAnimatedGeometry(mesh) {
   let offset = 0
 
   for (let [i, surface] of mesh.geometry.surfaces.entries()) {
+    const idx = new Uint16Array(surface.indices)
+
     groups.push({
       start: indices.length,
-      count: surface.indices.length,
+      count: idx.length,
       material: i
     })
 
-    surface.indices.forEach(n => indices.push(offset + n))
+    idx.forEach(n => indices.push(offset + n))
     offset += surface.numVertices
   }
 

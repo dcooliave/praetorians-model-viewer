@@ -37,7 +37,7 @@ export default function *(cursor) {
   function readSurface() {
     const textureID = cursor.readInt()
     const material = cursor.readUint()
-    const indices = Uint16Array.from({ length: cursor.readUint() }, cursor.readUshort, cursor)
+    const indices = cursor.buffer(cursor.readUint() * 2)
     const numTextures = (format == 1) ? 0 : cursor.readUint()
     const textures = Array.from({ length: numTextures }, cursor.readString, cursor)
 
@@ -48,7 +48,7 @@ export default function *(cursor) {
     const textureID = cursor.readInt()
     const material = cursor.readUint()
     const numVertices = cursor.readUint()
-    const indices = Uint16Array.from({ length: cursor.readUint() }, cursor.readUshort, cursor)
+    const indices = cursor.buffer(cursor.readUint() * 2)
     const numTextures = (format == 1) ? 0 : cursor.readUint()
     const textures = Array.from({ length: numTextures }, cursor.readString, cursor)
 
