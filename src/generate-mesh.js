@@ -56,20 +56,6 @@ export default function *(cursor) {
   }
 
   function readVertices() {
-    const numVertices = cursor.readUint()
-
-    const points = new Float32Array(numVertices * 3)
-    const normals = new Float32Array(numVertices * 3)
-    const colors = new Uint8Array(numVertices * 4)
-    const uv = new Float32Array(numVertices * 2)
-
-    for (let i = 0; i < numVertices; i++) {
-      points.set(Array.from({ length: 3 }, cursor.readFloat, cursor), i * 3)
-      normals.set(Array.from({ length: 3 }, cursor.readFloat, cursor), i * 3)
-      colors.set(Array.from({ length: 4 }, cursor.readUchar, cursor), i * 4)
-      uv.set(Array.from({ length: 2 }, cursor.readFloat, cursor), i * 2)
-    }
-
-    return { colors, normals, numVertices, points, uv }
+    return cursor.buffer(cursor.readUint() * 36)
   }
 }

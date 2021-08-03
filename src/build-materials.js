@@ -30,7 +30,7 @@ export default function(mesh, textures) {
         #include <morphtarget_vertex>
 
         vuv = uv;
-        vcolor = color / 255.;
+        vcolor = color;
 
         gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.);
       }

@@ -1,17 +1,19 @@
 import {
   BufferGeometry,
-  Float32BufferAttribute,
-  Uint8BufferAttribute,
+  InterleavedBuffer,
+  InterleavedBufferAttribute,
   BufferAttribute
 } from './three/build/three.module.js'
 
 export default function(vertices, indices, groups = []) {
+  const floats = new InterleavedBuffer(new Float32Array(vertices), 9)
+  const bytes = new InterleavedBuffer(new Uint8Array(vertices), 36)
+
   const geometry = new BufferGeometry()
 
-  geometry.setAttribute('position', new Float32BufferAttribute(vertices.points, 3))
-  geometry.setAttribute('color', new Uint8BufferAttribute(vertices.colors, 4))
-  geometry.setAttribute('uv', new Float32BufferAttribute(vertices.uv, 2))
-  geometry.computeVertexNormals()
+  geometry.setAttribute('position', new InterleavedBufferAttribute(floats, 3, 0))
+  geometry.setAttribute('color', new InterleavedBufferAttribute(bytes, 4, 24, true))
+  geometry.setAttribute('uv', new InterleavedBufferAttribute(floats, 2, 7))
   geometry.setIndex(new BufferAttribute(new Uint16Array(indices), 1))
 
   groups.forEach(group => {
