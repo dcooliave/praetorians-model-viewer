@@ -1,4 +1,4 @@
-import { Group, Mesh } from './three/build/three.module.js'
+import { Group, LessDepth, Mesh } from './three/build/three.module.js'
 
 import * as Types from './types.js'
 
@@ -11,10 +11,13 @@ export default function(mesh, transforms) {
 
       if (mesh.geometry.surfaces[geometryIndex].material == Types.MATERIAL_ALPHA) {
         const edgeMaterial = object.material.clone()
-        edgeMaterial.alphaTest = .5
+        edgeMaterial.alphaTest = .1
+        edgeMaterial.depthWrite = false
+        edgeMaterial.depthFunc = LessDepth
         edgeMaterial.uniforms = object.material.uniforms
         transformGroup.add(new Mesh(geometry, edgeMaterial))
         mesh.model.resources.add(edgeMaterial)
+        object.material.alphaTest = .75
         object.renderOrder = 1
       }
 
