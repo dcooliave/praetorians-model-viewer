@@ -15,10 +15,11 @@ export default function(mesh, transforms) {
         edgeMaterial.depthWrite = false
         edgeMaterial.depthFunc = LessDepth
         edgeMaterial.uniforms = object.material.uniforms
-        transformGroup.add(new Mesh(geometry, edgeMaterial))
+        const edgeMesh = new Mesh(geometry, edgeMaterial)
+        transformGroup.add(edgeMesh)
         mesh.model.resources.add(edgeMaterial)
         object.material.alphaTest = .75
-        object.renderOrder = 1
+        edgeMesh.renderOrder = 1
       }
 
       transformGroup.add(object)
