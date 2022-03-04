@@ -3,7 +3,7 @@ import {
   InterleavedBuffer,
   InterleavedBufferAttribute,
   BufferAttribute
-} from './three/build/three.module.js'
+} from 'three'
 
 export default function(vertices, indices, groups = []) {
   const floats = new InterleavedBuffer(new Float32Array(vertices), 9)

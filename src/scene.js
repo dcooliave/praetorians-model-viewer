@@ -8,9 +8,9 @@ import {
   PerspectiveCamera,
   Scene,
   WebGLRenderer
-} from './three/build/three.module.js'
+} from 'three'
 
-import { MapControls } from './three/examples/jsm/controls/OrbitControls.js'
+import { MapControls } from 'orbit-controls'
 
 import Registry from './registry.js'
 

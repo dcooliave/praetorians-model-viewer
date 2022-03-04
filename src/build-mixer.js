@@ -1,4 +1,4 @@
-import { AnimationMixer } from './three/build/three.module.js'
+import { AnimationMixer } from 'three'
 import { GEOMETRY_ANIMATED } from './types.js'
 
 export default function(mesh) {

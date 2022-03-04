@@ -2,20 +2,37 @@ import {
   DataTexture,
   LinearFilter,
   LinearMipMapLinearFilter,
-  RepeatWrapping,
-  RGBAFormat,
-  RGBFormat
-} from './three/build/three.module.js'
+  RepeatWrapping
+} from 'three'
 
-export default function(data) {
-  const texture = new DataTexture(new Uint8Array(data.colors), data.width, data.height)
+function toRGBA(ptx) {
+  const size = ptx.width * ptx.height
+  const src = new Uint8Array(ptx.colors)
+  const dst = new Uint8Array(size * 4)
+
+  for (let i = 0; i < size; i++) {
+    const x1 = i * 4
+    const x2 = i * 3
+
+    dst[x1] = src[x2]
+    dst[x1 + 1] = src[x2 + 1]
+    dst[x1 + 2] = src[x2 + 2]
+    dst[x1 + 3] = 255
+  }
+
+  return dst
+}
+
+export default function(ptx) {
+  const image = ptx.bitsPerPixel == 24 ? toRGBA(ptx) : new Uint8Array(ptx.colors)
+  const texture = new DataTexture(image, ptx.width, ptx.height)
 
   texture.magFilter = LinearFilter
   texture.minFilter = LinearMipMapLinearFilter
   texture.wrapS = RepeatWrapping
   texture.wrapT = RepeatWrapping
-  texture.format = (data.bitsPerPixel == 32) ? RGBAFormat : RGBFormat
   texture.generateMipmaps = true
+  texture.needsUpdate = true
 
   return texture
 }
