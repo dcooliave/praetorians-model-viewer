@@ -1,103 +1,96 @@
-const FileRegistry = {
-  read(path) {
-    return new Promise((resolve, reject) => {
-      this.find(path).file(file => {
-        const reader = new FileReader()
-        reader.addEventListener('loadend', () => resolve(reader.result))
-        reader.addEventListener('error', reject)
-        reader.readAsArrayBuffer(file)
-      }, reject)
-    })
-  },
+const files = new Map()
 
-  readText(path) {
-    return new Promise((resolve, reject) => {
-      this.find(path).file(file => {
-        const reader = new FileReader()
-        reader.addEventListener('loadend', () => resolve(reader.result))
-        reader.addEventListener('error', reject)
-        reader.readAsText(file)
-      }, reject)
-    })
-  },
+function readEntries(reader) {
+  return new Promise((resolve, reject) => {
+    reader.readEntries(resolve, reject)
+  })
+}
 
-  async *iterate(items) {
-    const queue = []
+function readEntry(entry) {
+  return new Promise((resolve, reject) => {
+    entry.file(file => {
+      const reader = new FileReader()
+      reader.addEventListener('loadend', () => resolve(reader.result))
+      reader.addEventListener('error', reject)
+      reader.readAsArrayBuffer(file)
+    }, reject)
+  })
+}
 
-    for (const item of items) {
-      if (item.kind == 'file') {
-        queue.push(item.webkitGetAsEntry())
-      }
+function findEntry(dir) {
+  return name => {
+    const fname = name.toLowerCase().split('/').pop()
+    const ext = fname.slice(fname.lastIndexOf('.') + 1)
+    const map = files.get(ext)
+
+    for (const key of map.keys()) {
+      if (!key.startsWith(dir)) continue
+      if (!key.endsWith(fname)) continue
+
+      return readEntry(map.get(key))
     }
-
-    while (queue.length > 0) {
-      const entry = queue.shift()
-
-      if (entry.isDirectory) {
-        queue.push(...await this.readDirectory(entry.createReader()))
-      } else if (entry.isFile) {
-        yield entry
-      }
-    }
-  },
-
-  async load(items) {
-    const added = []
-
-    for await (const file of this.iterate(items)) {
-      const i = file.name.lastIndexOf('.')
-      if (i == -1) continue
-
-      const path = file.fullPath.toLowerCase()
-      const type = file.name.slice(i + 1).toLowerCase()
-
-      if (this.files.has(type)) {
-        this.files.get(type).set(path, file)
-      } else {
-        this.files.set(type, new Map([[path, file]]))
-      }
-
-      added.push(file)
-    }
-
-    return added
-  },
-
-  find(str) {
-    const s = str.toLowerCase()
-    const map = this.files.get(s.slice(s.lastIndexOf('.') + 1))
-    let file
-
-    for (const path of map.keys()) {
-      if (path.endsWith(s)) {
-        file = map.get(path)
-        break
-      }
-    }
-
-    return file
-  },
-
-  entries(reader) {
-    return new Promise((resolve, reject) => {
-      reader.readEntries(resolve, reject)
-    })
-  },
-
-  async readDirectory(reader) {
-    let items = await this.entries(reader)
-    const files = []
-
-    while (items.length > 0) {
-      files.push(...items)
-      items = await this.entries(reader)
-    }
-
-    return files
   }
 }
 
-export default {
-  files: new Map(),
-  ...FileRegistry
+async function readDirectory(reader) {
+  let items = await readEntries(reader)
+  const files = []
+
+  while (items.length > 0) {
+    files.push(...items)
+    items = await readEntries(reader)
+  }
+
+  return files
 }
+
+async function* iterate(items) {
+  const queue = []
+
+  for (const item of items) {
+    if (item.kind == 'file') {
+      queue.push(item.webkitGetAsEntry())
+    }
+  }
+
+  while (queue.length > 0) {
+    const entry = queue.shift()
+
+    if (entry.isDirectory) {
+      queue.push(...await readDirectory(entry.createReader()))
+    } else if (entry.isFile) {
+      yield entry
+    }
+  }
+}
+
+export function directory(path) {
+  let dir = path.toLowerCase().split('/')
+  dir.pop()
+
+  return findEntry([...dir, ''].join('/'))
+}
+
+export async function load(items) {
+  const added = []
+
+  for await (const file of iterate(items)) {
+    const i = file.name.lastIndexOf('.')
+    if (i == -1) continue
+
+    const path = file.fullPath.toLowerCase()
+    const type = file.name.slice(i + 1).toLowerCase()
+
+    if (files.has(type)) {
+      files.get(type).set(path, file)
+    } else {
+      files.set(type, new Map([[path, file]]))
+    }
+
+    added.push(file)
+  }
+
+  return added
+}
+
+export default { directory, load }
