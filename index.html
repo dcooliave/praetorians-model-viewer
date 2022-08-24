@@ -18,7 +18,6 @@
     }
     </script>
 
-  <link rel="stylesheet" href="src/tachyons.css">
   <script type="module" src="src/scene.js"></script>
 
   <style media="screen">
@@ -29,62 +28,109 @@
       justify-content: center;
       height: 100%;
     }
+    html, body {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+      overflow: hidden;
+      display: flex;
+      margin: 0;
+    }
+    .panel {
+      flex: none;
+      display: flex;
+      flex-flow: column;
+      padding: .5rem;
+      max-width: 16rem;
+      width: 30%;
+    }
+    .list {
+      display: flex;
+      flex-flow: column;
+      flex: auto;
+    }
+    .list select {
+      flex: auto;
+    }
+    .setting {
+      display: flex;
+      flex-flow: column;
+      margin: .25rem 0;
+    }
+    .controls {
+      margin: .25rem 0;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      outline: 0;
+    }
+    #scene {
+      flex: auto;
+    }
   </style>
 
 </head>
 
-<body class="absolute absolute--fill overflow-hidden flex f6">
+<body>
 
-  <div class="flex-none flex flex-column w-30 w-third-l mw6 pa2">
+  <div class="panel">
 
-    <h1 class="f6 fw6">Models</h1>
+    <div class="list">
 
-    <select id="models" class="h-25 flex-auto mv1" size="2"></select>
-
-    <h1 class="f6 fw6">Meshes</h1>
-
-    <select id="meshes" class="h-25 flex-auto mv1" size="2"></select>
-
-    <div class="flex items-center mv1">
-
-      <input type="checkbox" id="grid" value="showGrid">
-      <label for="grid" class="ml1">Grid</label>
+      <div>Models</div>
+      <select id="models" size="2"></select>
 
     </div>
 
-    <div class="flex items-center mv1">
+    <div class="list">
 
-      <input type="checkbox" id="aabb" value="showBbox">
-      <label for="aabb" class="ml1">Bounding box</label>
-
-    </div>
-
-    <div class="flex items-center mv1">
-
-      <input type="checkbox" id="zoom" value="zoomCamera">
-      <label for="zoom" class="ml1">Zoom camera</label>
+      <div>Meshes</div>
+      <select id="meshes" size="2"></select>
 
     </div>
 
-    <h1 class="f6 fw6">Animation</h1>
+    <div class="setting">
 
-    <select id="animations" class="h-25 flex-auto mv1" size="2"></select>
+      <label>
+        <input type="checkbox" id="grid" value="showGrid">
+        <span>Grid</span>
+      </label>
 
-    <div class="mv1">
+      <label>
+        <input type="checkbox" id="aabb" value="showBbox">
+        <span>AABB</span>
+      </label>
 
-      <button id="play" class="ph3 pv1 dib bg-light-gray ba b--gray br1 dim">Play</button>
-      <button id="pause" class="ph3 pv1 dib bg-light-gray ba b--gray br1 dim">Pause</button>
+      <label>
+        <input type="checkbox" id="zoom" value="zoomCamera">
+        <span>Zoom</span>
+      </label>
 
     </div>
 
-    <input id="timeline" class="pv2" type="range" value="0" step="any">
+    <div class="list">
+
+      <div>Animation</div>
+      <select id="animations" size="2"></select>
+
+    </div>
+
+    <div class="controls">
+
+      <button id="play">Play</button>
+      <button id="pause">Pause</button>
+
+    </div>
+
+    <input id="timeline" type="range" value="0" step="any">
 
   </div>
 
-  <div id="scene" class="flex-auto">
-
-    <canvas class="w-100 h-100 outline-0"></canvas>
-
+  <div id="scene">
+    <canvas></canvas>
   </div>
 
 </body>
