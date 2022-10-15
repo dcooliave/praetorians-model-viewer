@@ -1,4 +1,7 @@
-const files = new Map()
+const files = {
+  'pba': new Map(),
+  'ptx': new Map()
+}
 
 function readEntries(reader) {
   return new Promise((resolve, reject) => {
@@ -21,7 +24,7 @@ function findEntry(dir) {
   return name => {
     const fname = name.toLowerCase().split('/').pop()
     const ext = fname.slice(fname.lastIndexOf('.') + 1)
-    const map = files.get(ext)
+    const map = files[ext]
 
     for (const key of map.keys()) {
       if (!key.startsWith(dir)) continue
@@ -75,17 +78,11 @@ export async function load(items) {
   const added = []
 
   for await (const file of iterate(items)) {
-    const i = file.name.lastIndexOf('.')
-    if (i == -1) continue
+    if (file.name[file.name.length - 4] != '.') continue
 
     const path = file.fullPath.toLowerCase()
-    const type = file.name.slice(i + 1).toLowerCase()
-
-    if (files.has(type)) {
-      files.get(type).set(path, file)
-    } else {
-      files.set(type, new Map([[path, file]]))
-    }
+    const type = file.name.slice(-3).toLowerCase()
+    files[type]?.set(path, file)
 
     added.push(file)
   }
