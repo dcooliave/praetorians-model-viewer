@@ -82,9 +82,10 @@ export async function load(items) {
 
     const path = file.fullPath.toLowerCase()
     const type = file.name.slice(-3).toLowerCase()
-    files[type]?.set(path, file)
 
-    added.push(file)
+    if (files[type]?.set(path, file)) {
+      added.push(file)
+    }
   }
 
   return added
