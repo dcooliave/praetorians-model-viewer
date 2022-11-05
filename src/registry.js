@@ -11,12 +11,7 @@ function readEntries(reader) {
 
 function readEntry(entry) {
   return new Promise((resolve, reject) => {
-    entry.file(file => {
-      const reader = new FileReader()
-      reader.addEventListener('loadend', () => resolve(reader.result))
-      reader.addEventListener('error', reject)
-      reader.readAsArrayBuffer(file)
-    }, reject)
+    entry.file(resolve, reject)
   })
 }
 
